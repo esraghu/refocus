@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Refocus</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      border: 2px solid rgb(200,200,200);
+      letter-spacing: 1px;
+      font-size: 0.8rem;
+    }
+
+    td, th {
+      border: 1px solid rgb(190,190,190);
+      padding: 10px 20px;
+    }
+
+    th {
+      background-color: rgb(235,235,235);
+    }
+
+    td {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <table>
+    <tr class="heading">
+      <th>Focus Area</th>
+      <th>Gaol</th>
+      <th class='days' id='Sun'></th>
+      <th class='days' id='Mon'></th>
+      <th class='days' id='Tue'></th>
+      <th class='days' id='Wed'></th>
+      <th class='days' id='Thu'></th>
+      <th class='days' id='Fri'></th>
+      <th class='days' id='Sat'></th>
+      <th>Frequency</th>
+    </tr>
+    <tr id="Engaged at Work" class="habit">
+      <td>Engaged at Work</td>
+      <td><input type="number" min="1" max="7" id="goal" value="4"></td>
+      <td><input type="checkbox"></td>
+      <td><input type="checkbox"></td>
+      <td><input type="checkbox"></td>
+      <td><input type="checkbox"></td>
+      <td><input type="checkbox"></td>
+      <td><input type="checkbox"></td>
+      <td><input type="checkbox"></td>
+      <td><output>0%</output></td>
+    </tr>
+    <tr id="Run or Walk or Workout" class="habit">
+      <td>Run or Walk or Workout</td>
+      <td><input type="number" min="1" max="7" id="goal" value="4"></td>
+      <td><input type="checkbox"></td>
+      <td><input type="checkbox"></td>
+      <td><input type="checkbox"></td>
+      <td><input type="checkbox"></td>
+      <td><input type="checkbox"></td>
+      <td><input type="checkbox"></td>
+      <td><input type="checkbox"></td>
+      <td><output>0%</output></td>
+    </tr>
+  </table>
+  <script>
+    let habitName = document.querySelectorAll(".habit")
+    habitName.forEach(habit => {
+      habit.addEventListener('click', () => {
+        let target = habit.querySelector('input[type=number]').value || 7
+        let counter = 0
+        habit.querySelectorAll('input[type=checkbox]').forEach(checkbox => {
+          if(checkbox.checked) counter++
+        })
+        habit.querySelector('output').innerHTML = `${Math.ceil((counter/target)*100)}%`
+      })
+    });
+
+    window.onload = () => {
+      let today = new Date()
+      let dd = today.getDay(), mm = today.getMonth()
+      let days = document.querySelector('.heading')
+      days.querySelectorAll('.days').forEach(day => {
+        dd = today.getDay()
+        switch(day.id) {
+          default : break
+          case 'Sun' : 
+            dd = eval(today.getDate() - dd)
+            break;
+          case 'Mon' :
+            dd = eval(today.getDate() - dd + 1)
+            break;
+          case 'Tue' :
+            dd = eval(today.getDate() - dd + 2)
+            break;
+          case 'Wed' :
+            dd = eval(today.getDate() - dd + 3)
+            break;
+          case 'Thu' :
+            dd = eval(today.getDate() - dd + 4)
+            break;
+          case 'Fri' :
+            dd = eval(today.getDate() - dd + 5)
+            break;
+          case 'Sat' :
+            dd = eval(today.getDate() - dd + 6)
+            break;
+        }
+        day.innerHTML = `${dd}/${mm}`
+      })
+    }
+  </script>
+</body>
+</html>
