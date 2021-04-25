@@ -42,43 +42,6 @@
       <th class='days' id='Sat'></th>
       <th>Frequency</th>
     </tr>
-    <tr id="Engaged at Work" class="habit">
-      <td>Engaged at Work</td>
-      <td><input type="number" min="1" max="7" id="goal" value="4"></td>
-      <td><input type="checkbox"></td>
-      <td><input type="checkbox"></td>
-      <td><input type="checkbox"></td>
-      <td><input type="checkbox"></td>
-      <td><input type="checkbox"></td>
-      <td><input type="checkbox"></td>
-      <td><input type="checkbox"></td>
-      <td><output>0%</output></td>
-    </tr>
-    <tr id="Run or Walk or Workout" class="habit">
-      <td>Run or Walk or Workout</td>
-      <td><input type="number" min="1" max="7" id="goal" value="4"></td>
-      <td><input type="checkbox"></td>
-      <td><input type="checkbox"></td>
-      <td><input type="checkbox"></td>
-      <td><input type="checkbox"></td>
-      <td><input type="checkbox"></td>
-      <td><input type="checkbox"></td>
-      <td><input type="checkbox"></td>
-      <td><output>0%</output></td>
-    </tr>
   </table>
-  <script>
-    let habitName = document.querySelectorAll(".habit")
-    habitName.forEach(habit => {
-      habit.addEventListener('click', () => {
-        let target = habit.querySelector('input[type=number]').value || 7
-        let counter = 0
-        habit.querySelectorAll('input[type=checkbox]').forEach(checkbox => {
-          if(checkbox.checked) counter++
-        })
-        habit.querySelector('output').innerHTML = `${Math.ceil((counter/target)*100)}%`
-      })
-    });
-  </script>
 </body>
 </html>
