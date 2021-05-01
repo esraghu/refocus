@@ -1,8 +1,5 @@
 window.onload = () => {
   setTheDates() // set the dates of this week based on todays date
-  // readHabits() // read the saved habits from the file
-  // listenForChange()
-  // let habits = localStorage.getItem('habits')
   if(localStorage.getItem('habits') == null) {
     let habitls = {
       1: {
@@ -50,16 +47,23 @@ readLocalData = habits => {
       console.log(habit)
       let target = habit.querySelector('#goal').value || 7
       let counter = 0
-      habit.querySelectorAll('input[type=checkbox]').forEach(checkbox => {
-        if(checkbox.checked) counter++
-      })
+      let sequence = new Array(7).fill(0)
+      const checkboxes = habit.querySelectorAll('input[type=checkbox]')
+      for(idx in checkboxes) {
+        if(checkboxes[idx].checked) {
+          sequence[idx] = 1
+          counter++
+        }
+      }
       habit.counter = counter
-      // writeChanges(habits)
+
+      // write changes to the local storage
       for(i in habits) {
-        if(habits[i].habit == habit.habit) {
+        if(habits[i].habit == habit.id) {
           habits[i].counter = counter
+          habits[i].sequence = sequence
           console.log(habits[i])
-          localStorage.setItem('habits', JSON.stringify(habitls))
+          localStorage.setItem('habits', JSON.stringify(habits))
         }
       }
       habit.querySelector('output').innerHTML = `${Math.ceil((counter/target)*100)}%`
@@ -99,12 +103,5 @@ setTheDates = () => {
         break;
     }
     day.innerHTML = `${dateOfDay.getDate()}/${dateOfDay.getMonth() + 1}`
-  })
-}
-
-writeChanges = data => {
-  const fs = require('fs')
-  fs.writeFile('data/data.json', data, err => {
-    err? alert(`There was an error writing due to ${err}`): console.log(`No error writing to file`)
   })
 }
