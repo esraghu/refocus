@@ -26,6 +26,19 @@
     td {
       text-align: center;
     }
+
+    input:checked {
+      counter-increment: list;
+    }
+    .result {
+      display: none;
+    }
+    input:checked ~ .result {
+      display: block;
+    }
+    .output::after {
+      content: "Selected: "counter(list);
+    }
   </style>
 </head>
 <body>
