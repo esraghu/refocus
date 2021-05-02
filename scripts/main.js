@@ -1,4 +1,6 @@
 window.onload = () => {
+  const h1 = document.querySelector('h1')
+  h1.innerHTML += getWeek()
   setTheDates() // set the dates of this week based on todays date
   if(localStorage.getItem('habits') == null) {
     let habitls = {
@@ -29,13 +31,14 @@ readLocalData = habits => {
     row.id = habits[i].habit
     const hName = row.insertCell(0)
     const goal = row.insertCell(1)
-    const elements = `<td><input type="checkbox"></td>
-    <td><input type="checkbox"></td>
-    <td><input type="checkbox"></td>
-    <td><input type="checkbox"></td>
-    <td><input type="checkbox"></td>
-    <td><input type="checkbox"></td>
-    <td><input type="checkbox"></td>
+    let sequence = typeof(habits[i].sequence) != 'undefined'? habits[i].sequence : new Array(7).fill(0)
+    const elements = `<td><input type="checkbox" ${sequence[0]? 'checked': ''}></td>
+    <td><input type="checkbox" ${sequence[1]? 'checked': ''}></td>
+    <td><input type="checkbox" ${sequence[2]? 'checked': ''}></td>
+    <td><input type="checkbox" ${sequence[3]? 'checked': ''}></td>
+    <td><input type="checkbox" ${sequence[4]? 'checked': ''}></td>
+    <td><input type="checkbox" ${sequence[5]? 'checked': ''}></td>
+    <td><input type="checkbox" ${sequence[6]? 'checked': ''}></td>
     <td><output>0%</output></td>`
     row.insertAdjacentHTML('beforeend', elements)        
     hName.innerHTML = habits[i].habit
@@ -104,4 +107,10 @@ setTheDates = () => {
     }
     day.innerHTML = `${dateOfDay.getDate()}/${dateOfDay.getMonth() + 1}`
   })
+}
+
+getWeek = (day = new Date()) => {
+  const Jan1st = new Date(day.getFullYear(), 0, 1)
+  let numberOfDays = Math.floor((day - Jan1st)/(24*60*60*1000))
+  return Math.ceil((day.getDay() + 1 + numberOfDays)/7)
 }
