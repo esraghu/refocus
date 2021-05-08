@@ -49,7 +49,7 @@ readLocalData = habits => {
   }
   let habitName = document.querySelectorAll(".habit")
   habitName.forEach(habit => {
-    habit.addEventListener('click', () => {
+    habit.addEventListener('change', () => {
       // we are listening on all the checkboxes and updating the sequence for that week 
       // and updating the counter
       let target = habit.querySelector('#goal').value || 7
