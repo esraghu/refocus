@@ -132,7 +132,7 @@ addHabit = () => {
     const key = Object.keys(habits).length + 1
     habits[key] = {}
     habits[key].name = name
-    habits[key].goal = 7
+    habits[key].goal = 4 // let's keep this at 4 times a week to start with
     habits[key].sequence = {}
     habits[key].sequence[getWeek()] = new Array(7).fill(0)
     localStorage.setItem('habits', JSON.stringify(habits))
