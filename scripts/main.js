@@ -110,3 +110,34 @@ getWeek = (day = new Date()) => {
   let numberOfDays = Math.floor((day - Jan1st)/(24*60*60*1000))
   return Math.ceil((day.getDay() + 1 + numberOfDays)/7)
 }
+
+clearLocalStorage = () => {
+  if (confirm(`Are you sure to clear your data?`)) {
+    console.log(`Local storage cleared!`)
+    localStorage.removeItem('habits')
+    location.reload()
+  } else {
+    console.log(`Local storage not cleared`)
+  }
+}
+
+reducer = (arr) => {
+  return arr.reduce((e, counter = 0) => e + counter)
+}
+
+addHabit = () => {
+  let name = prompt(`Enter the habit name:`)
+  if(name) {
+    habits = JSON.parse(localStorage.getItem('habits'))
+    const key = Object.keys(habits).length + 1
+    habits[key] = {}
+    habits[key].name = name
+    habits[key].goal = 7
+    habits[key].sequence = {}
+    habits[key].sequence[getWeek()] = new Array(7).fill(0)
+    localStorage.setItem('habits', JSON.stringify(habits))
+    location.reload()
+  } else {
+    alert(`Couldn’t add the new habit!`)
+  }
+}
