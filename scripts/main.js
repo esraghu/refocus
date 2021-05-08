@@ -5,16 +5,19 @@ window.onload = () => {
   if(localStorage.getItem('habits') == null) {
     let habitls = {
       1: {
-        "habit" : "Engaged at Work",
-        "goal" : 5
+        "name" : "Engaged at Work",
+        "goal" : 5,
+        "sequence" : {}
       },
       2: {
-        "habit" : "Run or Walk or Workout",
-        "goal" : 4
+        "name" : "Run or Walk or Workout",
+        "goal" : 4,
+        "sequence" : {}
       },
       3: { 
-        "habit" : "Crosswords",
-        "goal" : 4
+        "name" : "Crosswords",
+        "goal" : 4,
+        "sequence" : {}
       }
     }
     localStorage.setItem('habits', JSON.stringify(habitls))
@@ -25,51 +28,44 @@ window.onload = () => {
 readLocalData = habits => {
   const table = document.querySelector('table')
   console.log(habits)
+  let week = getWeek()
   for(let i in habits) {
     const row = table.insertRow()
     row.className = "habit"
-    row.id = habits[i].habit
+    row.id = habits[i].name
     const hName = row.insertCell(0)
     const goal = row.insertCell(1)
-    let sequence = typeof(habits[i].sequence) != 'undefined'? habits[i].sequence : new Array(7).fill(0)
-    const elements = `<td><input type="checkbox" ${sequence[0]? 'checked': ''}></td>
-    <td><input type="checkbox" ${sequence[1]? 'checked': ''}></td>
-    <td><input type="checkbox" ${sequence[2]? 'checked': ''}></td>
-    <td><input type="checkbox" ${sequence[3]? 'checked': ''}></td>
-    <td><input type="checkbox" ${sequence[4]? 'checked': ''}></td>
-    <td><input type="checkbox" ${sequence[5]? 'checked': ''}></td>
-    <td><input type="checkbox" ${sequence[6]? 'checked': ''}></td>
-    <td><output>0%</output></td>`
-    row.insertAdjacentHTML('beforeend', elements)        
-    hName.innerHTML = habits[i].habit
+    let sequence = habits[i]?.sequence?.[week] || new Array(7).fill(0)
+    
+    // let's add checkboxes for all days of the week
+    for(idx in sequence) {
+      row.insertAdjacentHTML('beforeend', 
+        `<td><input type="checkbox" ${sequence[idx]? 'checked': ''}></td>`)
+    }
+    row.insertAdjacentHTML('beforeend',
+      `<td><output>${Math.ceil((reducer(sequence)/habits[i].goal)*100) || 0}%</output></td>`)
+    hName.innerHTML = habits[i].name
     goal.innerHTML = `<input type="number" min="1" max="7" id="goal" value=${habits[i].goal}>`
   }
   let habitName = document.querySelectorAll(".habit")
   habitName.forEach(habit => {
     habit.addEventListener('click', () => {
-      console.log(habit)
+      // we are listening on all the checkboxes and updating the sequence for that week 
+      // and updating the counter
       let target = habit.querySelector('#goal').value || 7
-      let counter = 0
-      let sequence = new Array(7).fill(0)
-      const checkboxes = habit.querySelectorAll('input[type=checkbox]')
-      for(idx in checkboxes) {
-        if(checkboxes[idx].checked) {
-          sequence[idx] = 1
-          counter++
-        }
-      }
-      habit.counter = counter
+      const checkboxes = Array.from(habit.querySelectorAll('input[type=checkbox]'))
+      const sequence = checkboxes.map(checkbox => checkbox.checked? 1 : 0)
 
       // write changes to the local storage
       for(i in habits) {
-        if(habits[i].habit == habit.id) {
-          habits[i].counter = counter
-          habits[i].sequence = sequence
+        if(habits[i].name == habit.id) {
+          habits[i].sequence[week] = sequence
+          habits[i].goal = target
           console.log(habits[i])
           localStorage.setItem('habits', JSON.stringify(habits))
         }
       }
-      habit.querySelector('output').innerHTML = `${Math.ceil((counter/target)*100)}%`
+      habit.querySelector('output').innerHTML = `${Math.ceil((reducer(sequence)/target)*100)}%`
     })
   });
 }
