@@ -1,6 +1,9 @@
 window.onload = () => {
   const h1 = document.querySelector('h1')
-  h1.innerHTML += getWeek()
+  h1.innerHTML += getWeek() + ` <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-calendar-week" viewBox="0 0 20 20">
+  <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-5 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z"/>
+  <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+</svg>`
   setTheDates() // set the dates of this week based on todays date
   if(localStorage.getItem('habits') == null) {
     let habitls = {
@@ -33,20 +36,19 @@ readLocalData = habits => {
     const row = table.insertRow()
     row.className = "habit"
     row.id = habits[i].name
-    const hName = row.insertCell(0)
-    const goal = row.insertCell(1)
-    let sequence = habits[i]?.sequence?.[week] || new Array(7).fill(0)
+    row.insertAdjacentHTML('beforeend', `<th scope="row">${habits[i].name}</th>`)
+    row.insertAdjacentHTML('beforeend', `<td><input type="number" min="1" max="7" id="goal" value=${habits[i].goal}></td>`)
     
     // let's add checkboxes for all days of the week
+    let sequence = habits[i]?.sequence?.[week] || new Array(7).fill(0)
     for(idx in sequence) {
       row.insertAdjacentHTML('beforeend', 
         `<td><input type="checkbox" ${sequence[idx]? 'checked': ''}></td>`)
     }
     row.insertAdjacentHTML('beforeend',
       `<td><output>${Math.ceil((reducer(sequence)/habits[i].goal)*100) || 0}%</output></td>`)
-    hName.innerHTML = habits[i].name
-    goal.innerHTML = `<input type="number" min="1" max="7" id="goal" value=${habits[i].goal}>`
   }
+  
   let habitName = document.querySelectorAll(".habit")
   habitName.forEach(habit => {
     habit.addEventListener('change', () => {

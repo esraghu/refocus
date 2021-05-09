@@ -4,60 +4,37 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
   <title>Refocus</title>
   <script src="scripts/main.js"></script>
   <style>
-    table {
-      border-collapse: collapse;
-      border: 2px solid rgb(200,200,200);
-      letter-spacing: 1px;
-      font-size: 0.8rem;
-    }
-
-    td, th {
-      border: 1px solid rgb(190,190,190);
-      padding: 10px 20px;
-    }
-
-    th {
-      background-color: rgb(235,235,235);
-    }
-
-    td {
-      text-align: center;
-    }
-
-    /* input:checked {
-      counter-increment: list;
-    }
-    .result {
-      display: none;
-    }
-    input:checked ~ .result {
-      display: block;
-    }
-    .output::after {
-      content: "Selected: "counter(list);
-    } */
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&family=Source+Code+Pro:wght@300&display=swap');
   </style>
+  <link rel="stylesheet" href="style/style.css">
 </head>
 <body>
   <h1>Focus during the Week: </h1>
-  <table>
+  <table class="table table-hover">
     <tr class="heading">
-      <th>Focus Area</th>
-      <th>Goal</th>
-      <th class='days' id='Sun'></th>
-      <th class='days' id='Mon'></th>
-      <th class='days' id='Tue'></th>
-      <th class='days' id='Wed'></th>
-      <th class='days' id='Thu'></th>
-      <th class='days' id='Fri'></th>
-      <th class='days' id='Sat'></th>
-      <th>Frequency</th>
+      <th scope="col">Focus Area</th>
+      <th scope="col">Goal</th>
+      <th scope="col" class='days' id='Sun'></th>
+      <th scope="col" class='days' id='Mon'></th>
+      <th scope="col" class='days' id='Tue'></th>
+      <th scope="col" class='days' id='Wed'></th>
+      <th scope="col" class='days' id='Thu'></th>
+      <th scope="col" class='days' id='Fri'></th>
+      <th scope="col" class='days' id='Sat'></th>
+      <th scope="col">Frequency</th>
     </tr>
   </table>
-  <input type="button" value="Add Habit" onclick="addHabit()">
-  <input type="button" value="Reset" onclick="clearLocalStorage()">
+  <div class="btns">
+    <button onclick="addHabit()" type="button"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 24 16">
+      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+      <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+    </svg></i></button>
+    <input type="button" value="Add Habit" onclick="addHabit()" accesskey="b">
+    <input type="button" value="Reset" onclick="clearLocalStorage()">
+  </div>
 </body>
 </html>
