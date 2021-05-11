@@ -128,7 +128,9 @@ reducer = (arr) => {
 }
 
 addHabit = () => {
-  let name = prompt(`Enter the habit name:`)
+  // let name = prompt(`Enter the habit name:`)
+  let name = document.querySelector('#habitName').value
+  console.log(name)
   if(name) {
     habits = JSON.parse(localStorage.getItem('habits'))
     const key = Object.keys(habits).length + 1
