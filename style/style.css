@@ -24,13 +24,13 @@ th {
   background-color: rgb(235,235,235);
 }
 
-th>button {
+th>svg {
   display: none;
   color: blue;
   border: none;
 }
 
-th:hover button {
+th:hover svg {
   display: inline;
 }
 
