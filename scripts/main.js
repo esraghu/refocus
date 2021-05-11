@@ -36,7 +36,9 @@ readLocalData = habits => {
     const row = table.insertRow()
     row.className = "habit"
     row.id = habits[i].name
-    row.insertAdjacentHTML('beforeend', `<th scope="row">${habits[i].name}</th>`)
+    row.insertAdjacentHTML('beforeend', `<th scope="row">${habits[i].name} <button type="button" class="editHabit" onclick="editHabit(this)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+    <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
+    </svg></button></th>`)
     row.insertAdjacentHTML('beforeend', `<td><input type="number" min="1" max="7" id="goal" value=${habits[i].goal}></td>`)
     
     // let's add checkboxes for all days of the week
@@ -45,8 +47,9 @@ readLocalData = habits => {
       row.insertAdjacentHTML('beforeend', 
         `<td><input type="checkbox" ${sequence[idx]? 'checked': ''}></td>`)
     }
+    let progress = Math.ceil((reducer(sequence)/habits[i].goal)*100) || 0
     row.insertAdjacentHTML('beforeend',
-      `<td><output>${Math.ceil((reducer(sequence)/habits[i].goal)*100) || 0}%</output></td>`)
+      `<td><progress max="100" value="${progress}">${progress}%</progress></td>`)
   }
   
   let habitName = document.querySelectorAll(".habit")
@@ -67,7 +70,9 @@ readLocalData = habits => {
           localStorage.setItem('habits', JSON.stringify(habits))
         }
       }
-      habit.querySelector('output').innerHTML = `${Math.ceil((reducer(sequence)/target)*100)}%`
+      let progress = Math.ceil((reducer(sequence)/target)*100)
+      habit.querySelector('progress').innerHTML = `${progress}%`
+      habit.querySelector('progress').value = progress
     })
   });
 }
@@ -144,4 +149,32 @@ addHabit = () => {
   } else {
     alert(`Couldn’t add the new habit!`)
   }
+}
+
+editHabit = (element) => {
+  let name = element.parentNode.parentNode.id
+  // let earlierHTML = element.parentNode.innerHTML
+  // console.log(element.parentNode.innerHTML)
+  element.parentNode.innerHTML = `<th scope="row"><input type="text" value="${name}" id="editingHabit" onfocusout="updateHabit(this, '${name}')" autofocus</th>`
+  document.querySelector('#editingHabit').focus()
+}
+
+updateHabit = (element, prevName) => {
+  let name = element.value
+  console.log(name, prevName)
+  if(typeof(prevName) != 'string') {
+    alert(`Couldn't update the element`)
+    location.reload()
+  }
+  if(name != prevName) {
+    habits = JSON.parse(localStorage.getItem('habits'))
+    for(idx in habits) {
+      if(habits[idx].name == prevName) {
+        habits[idx].name = name
+      }
+    }
+    console.log(habits)
+    localStorage.setItem('habits', JSON.stringify(habits))
+  }
+  location.reload()
 }

@@ -24,6 +24,16 @@ th {
   background-color: rgb(235,235,235);
 }
 
+th>button {
+  display: none;
+  color: blue;
+  border: none;
+}
+
+th:hover button {
+  display: inline;
+}
+
 td {
   text-align: center;
 }
