@@ -5,6 +5,7 @@ body {
 
 h1 {
   text-align: center;
+  background-color: #9569e7;
 }
 
 table {
@@ -38,6 +39,11 @@ th:hover svg {
 
 td {
   text-align: center;
+}
+
+.dayofweek {
+  /* content: '*'; */
+  color: red;
 }
 
 .btns {

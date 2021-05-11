@@ -36,10 +36,10 @@ readLocalData = habits => {
     const row = table.insertRow()
     row.className = "habit"
     row.id = habits[i].name
-    row.insertAdjacentHTML('beforeend', `<th scope="row">${habits[i].name} <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16" onclick="editHabit(this)">
+    row.insertAdjacentHTML('beforeend', `<th scope="row" class="table-secondary">${habits[i].name} <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16" onclick="editHabit(this)">
     <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
     </svg></th>`)
-    row.insertAdjacentHTML('beforeend', `<td><input type="number" min="1" max="7" id="goal" value=${habits[i].goal}></td>`)
+    row.insertAdjacentHTML('beforeend', `<td class="table-warning"><input type="number" min="1" max="7" id="goal" value=${habits[i].goal}></td>`)
     
     // let's add checkboxes for all days of the week
     let sequence = habits[i]?.sequence?.[week] || new Array(7).fill(0)
@@ -49,7 +49,7 @@ readLocalData = habits => {
     }
     let progress = Math.ceil((reducer(sequence)/habits[i].goal)*100) || 0
     row.insertAdjacentHTML('beforeend',
-      `<td><progress max="100" value="${progress}">${progress}%</progress></td>`)
+      `<td class="table-info"><progress max="100" value="${progress}">${progress}%</progress></td>`)
   }
   
   let habitName = document.querySelectorAll(".habit")
@@ -79,34 +79,21 @@ readLocalData = habits => {
 
 setTheDates = () => {
   let today = new Date()
-  let dd = today.getDay(), mm = eval(today.getMonth() + 1)
-  let days = document.querySelector('.heading')
-  days.querySelectorAll('.days').forEach(day => {
+  // let days = document.querySelector('.heading')
+  const dayMap = {
+    'Sun' : 0,
+    'Mon' : 1,
+    'Tue' : 2,
+    'Wed' : 3,
+    'Thu' : 4,
+    'Fri' : 5,
+    'Sat' : 6
+  }
+  document.querySelectorAll('.days').forEach(day => {
     const dateOfDay = new Date()
-    dd = today.getDay()
-    switch(day.id) {
-      default : break
-      case 'Sun' : 
-        dateOfDay.setDate(today.getDate() - today.getDay())
-        break;
-      case 'Mon' :
-        dateOfDay.setDate(today.getDate() - today.getDay() + 1)
-        break;
-      case 'Tue' :
-        dateOfDay.setDate(today.getDate() - today.getDay() + 2)
-        break;
-      case 'Wed' :
-        dateOfDay.setDate(today.getDate() - today.getDay() + 3)
-        break;
-      case 'Thu' :
-        dateOfDay.setDate(today.getDate() - today.getDay() + 4)
-        break;
-      case 'Fri' :
-        dateOfDay.setDate(today.getDate() - today.getDay() + 5)
-        break;
-      case 'Sat' :
-        dateOfDay.setDate(today.getDate() - today.getDay() + 6)
-        break;
+    dateOfDay.setDate(today.getDate() - today.getDay() + dayMap[day.id])
+    if(today.getDay() == dayMap[day.id]) {
+      day.className += ` dayofweek`
     }
     day.innerHTML = `${dateOfDay.getDate()}/${dateOfDay.getMonth() + 1}`
   })
