@@ -25,13 +25,15 @@ th {
 }
 
 th>svg {
-  display: none;
+  /* display: none; */
   color: blue;
   border: none;
+  visibility: hidden;
 }
 
 th:hover svg {
-  display: inline;
+  /* display: inline; */
+  visibility: visible;
 }
 
 td {
