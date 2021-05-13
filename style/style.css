@@ -1,5 +1,5 @@
 body {
-  background-color: gray;
+  background-color: rgb(138, 172, 223);
   font-family: 'Roboto', sans-serif;
   /* justify-items: center; */
 }
@@ -82,7 +82,3 @@ input[type="button"] {
 input[type="text"] {
   align-items: center;
 }
-
-/* input[type="checkbox"] {
-  appearance: textfield;
-} */
