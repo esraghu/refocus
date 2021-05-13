@@ -28,53 +28,90 @@ window.onload = () => {
   readLocalData(JSON.parse(localStorage.getItem('habits')))
 }
 
-readLocalData = habits => {
-  const table = document.querySelector('table')
-  console.log(habits)
-  let week = getWeek()
-  for(let i in habits) {
-    const row = table.insertRow()
-    row.className = "habit"
-    row.id = habits[i].name
-    row.insertAdjacentHTML('beforeend', `<th scope="row" class="table-secondary">${habits[i].name} <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16" onclick="editHabit(this)">
-    <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
-    </svg></th>`)
-    row.insertAdjacentHTML('beforeend', `<td class="table-warning"><input type="number" min="1" max="7" id="goal" value=${habits[i].goal}></td>`)
-    
-    // let's add checkboxes for all days of the week
-    let sequence = habits[i]?.sequence?.[week] || new Array(7).fill(0)
-    for(idx in sequence) {
-      row.insertAdjacentHTML('beforeend', 
-        `<td><input type="checkbox" ${sequence[idx]? 'checked': ''}></td>`)
-    }
-    let progress = Math.ceil((reducer(sequence)/habits[i].goal)*100) || 0
-    row.insertAdjacentHTML('beforeend',
-      `<td class="table-info"><progress max="100" value="${progress}">${progress}%</progress></td>`)
-  }
-  
-  let habitName = document.querySelectorAll(".habit")
-  habitName.forEach(habit => {
-    habit.addEventListener('change', () => {
-      // we are listening on all the checkboxes and updating the sequence for that week 
-      // and updating the counter
-      let target = habit.querySelector('#goal').value || 7
-      const checkboxes = Array.from(habit.querySelectorAll('input[type=checkbox]'))
-      const sequence = checkboxes.map(checkbox => checkbox.checked? 1 : 0)
+addRows = (habit, tbody) => {
+  // Clone a row from the template's content
+  const template = document.querySelector('template')
+  const row = template.content.cloneNode(true)
 
-      // write changes to the local storage
-      for(i in habits) {
-        if(habits[i].name == habit.id) {
-          habits[i].sequence[week] = sequence
-          habits[i].goal = target
-          console.log(habits[i])
-          localStorage.setItem('habits', JSON.stringify(habits))
-        }
-      }
-      let progress = Math.ceil((reducer(sequence)/target)*100)
-      habit.querySelector('progress').innerHTML = `${progress}%`
-      habit.querySelector('progress').value = progress
-    })
-  });
+  // Set row's id and the value in the row header
+  const tr = row.querySelector('tr')
+  tr.id = habit.name
+  const th = row.querySelector('th')
+  th.innerHTML = `${habit.name}${th.innerHTML}`
+
+  // Set the goal from what is in localstorage
+  const goal = row.querySelector('#goal')
+  goal.value = habit.goal
+  
+  // Set the checkbox values
+  let week = getWeek()
+  let sequence = habit.sequence?.[week] || new Array(7).fill(0)
+  const weekdays = row.querySelectorAll('input[type=checkbox]')
+  for(idx in sequence) {
+    weekdays[idx].checked = sequence[idx]
+  }
+
+  // Update the progress bar
+  let progress = Math.ceil((reducer(sequence)/habit.goal)*100) || 0
+  const progressBar = row.querySelector('progress')
+  progressBar.value = progress
+  progressBar.innerHTML = `${progress}%`
+
+  // Append the row to the body
+  tbody.appendChild(row)
+}
+
+readLocalData = habits => {
+  const table = document.querySelector('tbody')
+  console.log(habits)
+  for(let i in habits) addRows(habits[i], table)
+}
+
+updateRecord = habit => {
+  // we are listening for any changes here
+  let target = habit.querySelector('#goal').value || 7
+  const checkboxes = Array.from(habit.querySelectorAll('input[type=checkbox]'))
+  const sequence = checkboxes.map(checkbox => checkbox.checked? 1 : 0)
+  let week = getWeek()
+
+  // write changes to the local storage
+  const habits = JSON.parse(localStorage.getItem('habits'))
+  for(i in habits) {
+    if(habits[i].name == habit.id) {
+      habits[i].sequence[week] = sequence
+      habits[i].goal = target
+      console.log(habits[i])
+      localStorage.setItem('habits', JSON.stringify(habits))
+    }
+  }
+  let progress = Math.ceil((reducer(sequence)/target)*100)
+  habit.querySelector('progress').innerHTML = `${progress}%`
+  habit.querySelector('progress').value = progress
+}
+
+deleteRecord = element => {
+  let name = element.parentNode.parentNode.id
+  if(confirm(`Are you sure to delete the habit: ${name}?`)) {
+    let habits = JSON.parse(localStorage.getItem('habits'))
+    for(i in habits) {
+      if(habits[i].name == name) {
+        console.log(`Deleting: ${habits[i]}`)
+        delete habits[i]
+      } 
+    }
+
+    // we need to realign the entries in our json object
+    let counter = 1, habitMap = new Array()
+    for(entry of Object.entries(habits)) {
+      entry[0] = counter++
+      habitMap.push(entry)
+    }
+    habits = Object.fromEntries(habitMap)
+    localStorage.setItem('habits', JSON.stringify(habits))
+    location.reload()
+  } else {
+    console.log(`Record not deleted`)
+  }
 }
 
 setTheDates = () => {
