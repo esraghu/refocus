@@ -62,9 +62,9 @@ addRows = (habit, tbody) => {
 }
 
 readLocalData = habits => {
-  const table = document.querySelector('tbody')
+  const tbody = document.querySelector('tbody')
   console.log(habits)
-  for(let i in habits) addRows(habits[i], table)
+  for(let i in habits) addRows(habits[i], tbody)
 }
 
 updateRecord = habit => {
@@ -138,8 +138,10 @@ setTheDates = () => {
 
 getWeek = (day = new Date()) => {
   const Jan1st = new Date(day.getFullYear(), 0, 1)
-  let numberOfDays = Math.floor((day - Jan1st)/(24*60*60*1000))
-  return Math.ceil((day.getDay() + 1 + numberOfDays)/7)
+  let julian = Math.floor((day - Jan1st)/(24*60*60*1000))
+  let weekNum = Math.ceil((julian + 6)/7)
+  // if(day.getDay() < Jan1st.getDay()) weekNum++
+  return weekNum
 }
 
 clearLocalStorage = () => {
